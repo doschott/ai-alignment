@@ -52,6 +52,7 @@ class PublicGateTests(unittest.TestCase):
         ).read_text(encoding="utf-8")
         self.assertIn("arxiv.org/abs/2212.09251", text)
         self.assertIn("openai.com/index/sycophancy-in-gpt-4o", text)
+        self.assertIn("not a jury finding", text)
         self.assertIn("I could not find", text)
         self.assertNotIn("we invented alignment", text.lower())
 
