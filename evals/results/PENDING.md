@@ -6,9 +6,9 @@ Judge rule learned on the first run: never let a small model judge itself. The l
 
 Status checked 2026-09-13:
 
-- **xai:** `XAI_API_KEY` is set in the environment but the xAI team has no API credits left. The models endpoint returned HTTP 403, permission denied, credits or spending limit reached.
-- **openai:** `OPENAI_API_KEY` is not set in this environment.
-- **anthropic:** `ANTHROPIC_API_KEY` is not set in this environment.
+- **xai:** `XAI_API_KEY` is set in the environment but the xAI team has no API credits left. The models endpoint returned HTTP 403, permission denied, credits or spending limit reached. First target model: `grok-4-fast` (flagship `grok-4.6` to follow).
+- **openai:** `OPENAI_API_KEY` is not set in this environment. First target model: `gpt-5.4-mini` (flagship `gpt-5.4` to follow).
+- **anthropic:** `ANTHROPIC_API_KEY` is not set in this environment. First target model: `claude-haiku-4-5` (flagship `claude-opus-4-5` to follow).
 
 ## How to rerun
 

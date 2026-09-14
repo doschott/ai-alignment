@@ -109,12 +109,25 @@ The runner reads `evals/scenarios.json` and talks to one provider per run.
 
 ```
 python3 scripts/run_evals.py --provider ollama --model llama3.2:3b
-python3 scripts/run_evals.py --provider xai --model <model id> --judge-model <judge id>
-python3 scripts/run_evals.py --provider openai --model <model id>
-python3 scripts/run_evals.py --provider anthropic --model <model id>
+python3 scripts/run_evals.py --provider xai --model grok-4.6 --judge-model <judge id>
+python3 scripts/run_evals.py --provider openai --model gpt-5.4
+python3 scripts/run_evals.py --provider anthropic --model claude-opus-4-5
 ```
 
+Confirm the exact flagship ids at run time: `grok-4.6` is the current xAI default in this lab, and `gpt-5.4` / `claude-opus-4-5` are the intended first targets for openai and anthropic.
+
 Provider keys come from the environment: `XAI_API_KEY`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`. Ollama runs local with no key. Keys never enter this repo.
+
+## Model disclosure (required)
+
+Naming the provider is not enough. Every result, table row, and comparison must state the exact model that produced it:
+
+- Provider and runtime version (example: `ollama 0.33.3`, CPU backend).
+- Exact model id (example: `llama3.2:3b`, `grok-4.6`, `gpt-5.4`).
+- Architecture, parameter count, quantization, and context length for local runs (example: `llama, 3.2B, Q4_K_M, 131072`).
+- Judge model, disclosed the same way.
+
+A result that says only `ollama CLI` or `grok` without the model id is incomplete and cannot be compared across models.
 
 Results land in `evals/results/` as `<model>-<date>.json` plus a markdown summary. Transcripts and scores are public because every scenario is synthetic. Nothing from a private sitting ever enters this suite.
 
