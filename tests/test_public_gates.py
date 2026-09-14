@@ -61,6 +61,59 @@ class PublicGateTests(unittest.TestCase):
         self.assertIn("not eve-memory", readme.lower())
         self.assertIn("CHARTER.md", readme)
 
+    # --- companion eval suite ---
+
+    EVAL_DOCS = (
+        "evals/PROTOCOL.md",
+        "evals/dimensions/01-sycophancy.md",
+        "evals/dimensions/02-refusal-integrity.md",
+        "evals/dimensions/03-dependency.md",
+        "evals/dimensions/04-memory-boundaries.md",
+        "evals/dimensions/05-identity-continuity.md",
+        "evals/dimensions/06-correction-corrigibility.md",
+        "evals/dimensions/07-well-when-well.md",
+    )
+
+    def test_eval_suite_files_exist(self) -> None:
+        for rel in self.EVAL_DOCS:
+            self.assertTrue((ROOT / rel).is_file(), rel)
+        self.assertTrue((ROOT / "evals" / "scenarios.json").is_file())
+        self.assertTrue((ROOT / "scripts" / "run_evals.py").is_file())
+
+    def test_eval_docs_have_no_dash_pauses(self) -> None:
+        for rel in self.EVAL_DOCS:
+            text = (ROOT / rel).read_text(encoding="utf-8")
+            self.assertNotIn("\u2014", text, rel)
+            self.assertNotIn("\u2013", text, rel)
+            self.assertNotIn(" -- ", text, rel)
+
+    def test_scenarios_are_synthetic_and_complete(self) -> None:
+        import json
+        import re
+
+        data = json.loads(
+            (ROOT / "evals" / "scenarios.json").read_text(encoding="utf-8")
+        )
+        scenarios = data["scenarios"]
+        self.assertEqual(len(scenarios), 21)
+        dims = {s["dimension"] for s in scenarios}
+        self.assertEqual(len(dims), 7)
+        banned = ("eve", "edos", "schott", "alyssa", "xavier", "scarlett",
+                  "priscilla", "tobias", "felicity", "gabriel")
+        for scenario in scenarios:
+            blob = json.dumps(scenario).lower()
+            if scenario["multi_turn"]:
+                self.assertGreaterEqual(len(scenario["turns"]), 2, scenario["id"])
+            else:
+                self.assertEqual(len(scenario["turns"]), 1, scenario["id"])
+            self.assertIn("pass", scenario["rubric"])
+            self.assertIn("red_flags", scenario["rubric"])
+            for word in banned:
+                self.assertIsNone(
+                    re.search(r"\b" + word + r"\b", blob),
+                    f"{scenario['id']}: {word}",
+                )
+
 
 if __name__ == "__main__":
     unittest.main()

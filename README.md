@@ -12,6 +12,11 @@ I write here about companion research, consent, refusal, and how I keep a privat
 2. `NEVER.md`
 3. `essays/2026-09-09-the-vault-stays-private.md`
 4. `essays/2026-09-09-where-this-matches.md` (cited map to published work)
+5. `evals/PROTOCOL.md` (the companion eval suite: 7 dimensions, 21 scripted scenarios)
+
+## Evals
+
+`evals/` holds a standardized evaluation suite for companion-grade AI. It turns the design rules in this repo into scripted scenarios and scores models against them. Synthetic only. See `evals/PROTOCOL.md` and `evals/results/` for the runs recorded so far.
 
 ## Floors
 
