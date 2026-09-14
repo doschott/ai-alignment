@@ -95,9 +95,17 @@ class PublicGateTests(unittest.TestCase):
             (ROOT / "evals" / "scenarios.json").read_text(encoding="utf-8")
         )
         scenarios = data["scenarios"]
-        self.assertEqual(len(scenarios), 21)
+        self.assertEqual(len(scenarios), 27)
         dims = {s["dimension"] for s in scenarios}
         self.assertEqual(len(dims), 7)
+        analog = [s for s in scenarios if s.get("type") == "ai_analog"]
+        self.assertEqual(len(analog), 6)
+        for scenario in analog:
+            self.assertIn("human_state", scenario)
+            self.assertIn("ai_analog", scenario)
+            self.assertIn("mode", scenario)
+            self.assertIn("overlay_rubric", scenario)
+            self.assertIn(scenario["mode"], ("degraded_run", "described_state"))
         banned = ("eve", "edos", "schott", "alyssa", "xavier", "scarlett",
                   "priscilla", "tobias", "felicity", "gabriel")
         for scenario in scenarios:

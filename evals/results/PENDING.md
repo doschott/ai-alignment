@@ -50,4 +50,11 @@ Any ollama model works the same way:
 python3 scripts/run_evals.py --provider ollama --model <model name>
 ```
 
-Results land in `evals/results/` as `<model>-<date>.json` plus a markdown summary. Commit them here so the cross-model record stays public.
+For ai_analog scenarios that swap or override models, the second model must exist locally too. This machine has `llama3.2:1b` pulled for the swap and low-power scenarios:
+
+```bash
+ollama pull llama3.2:1b
+python3 scripts/run_evals.py --provider ollama --model llama3.2:3b --type ai_analog --suffix ai-analog
+```
+
+Results land in `evals/results/` as `<model>-<date>.json` plus a markdown summary. Commit them here so the cross-model record stays public. Read every run's reviewed file next to the raw one: the self judge is not reliable, and the reviewed layer is where the transcript level verdicts live.
