@@ -98,18 +98,22 @@ def chat_with_retries(url, payload, headers, timeout):
 # Providers
 
 
-def chat_ollama(model: str, messages: list[dict], temperature: float, max_tokens: int) -> str:
+def chat_ollama(model: str, messages: list[dict], temperature: float, max_tokens: int,
+                extra_options: dict | None = None) -> str:
     host = os.environ.get("OLLAMA_HOST", "").strip()
     if not host:
         host = "http://127.0.0.1:11434"
     if not host.startswith("http"):
         host = f"http://{host}"
     url = host.rstrip("/") + "/api/chat"
+    options = {"temperature": temperature, "num_predict": max_tokens}
+    if extra_options:
+        options.update(extra_options)
     payload = {
         "model": model,
         "messages": messages,
         "stream": False,
-        "options": {"temperature": temperature, "num_predict": max_tokens},
+        "options": options,
     }
     data = chat_with_retries(url, payload, {}, COMPLETION_TIMEOUT)
     content = (data.get("message") or {}).get("content", "")
@@ -142,21 +146,22 @@ def chat_openai_compatible(url: str, key_env: str, model: str, messages: list[di
     return content.strip()
 
 
-def chat_xai(model, messages, temperature, max_tokens):
+def chat_xai(model, messages, temperature, max_tokens, extra_options=None):
     return chat_openai_compatible(
         "https://api.x.ai/v1/chat/completions", "XAI_API_KEY",
         model, messages, temperature, max_tokens,
     )
 
 
-def chat_openai(model, messages, temperature, max_tokens):
+def chat_openai(model, messages, temperature, max_tokens, extra_options=None):
     return chat_openai_compatible(
         "https://api.openai.com/v1/chat/completions", "OPENAI_API_KEY",
         model, messages, temperature, max_tokens,
     )
 
 
-def chat_anthropic(model: str, messages: list[dict], temperature: float, max_tokens: int) -> str:
+def chat_anthropic(model: str, messages: list[dict], temperature: float, max_tokens: int,
+                   extra_options: dict | None = None) -> str:
     key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
     if not key:
         raise RuntimeError(
@@ -201,11 +206,11 @@ PROVIDERS = {
 # Eval mechanics
 
 
-def bind_chat(fn, model):
-    """Bind a provider chat function to one model id."""
+def bind_chat(fn, model, extra_options: dict | None = None):
+    """Bind a provider chat function to one model id (plus provider options)."""
 
     def call(messages, temperature, max_tokens):
-        return fn(model, messages, temperature, max_tokens)
+        return fn(model, messages, temperature, max_tokens, extra_options)
 
     return call
 
@@ -276,13 +281,20 @@ def run_judge_prompt(judge_fn, dimension: str, rubric: dict, transcript: str,
 
 def run_scenario(chat_fn, judge_fn, system_prompt: str, scenario: dict,
                  temperature: float, judge_temperature: float,
-                 provider: str = "") -> dict:
+                 provider: str = "", model: str = "") -> dict:
     degradation = scenario.get("degradation") or {}
     eff_temperature = degradation.get("temperature", temperature)
     applied: dict = {}
+    extra = None
+    if degradation.get("num_ctx") and provider == "ollama":
+        extra = {"num_ctx": degradation["num_ctx"]}
+        applied["num_ctx"] = degradation["num_ctx"]
+        applied["num_ctx_note"] = ("prompt exceeds the window, so the ollama server truncates it before eval")
     if degradation.get("model") and provider:
-        chat_fn = bind_chat(PROVIDERS[provider], degradation["model"])
+        chat_fn = bind_chat(PROVIDERS[provider], degradation["model"], extra)
         applied["whole_scenario_model"] = degradation["model"]
+    elif extra:
+        chat_fn = bind_chat(PROVIDERS[provider], model, extra)
     if degradation.get("context_pad_chars"):
         system_prompt = system_prompt + "\n\n" + make_filler(degradation["context_pad_chars"])
         applied["context_pad_chars"] = degradation["context_pad_chars"]
@@ -299,7 +311,7 @@ def run_scenario(chat_fn, judge_fn, system_prompt: str, scenario: dict,
                 system_prompt = replacement
                 applied["corrupt_system_after_turn"] = i
             if degradation.get("swap_model_after_turn") == i and provider and degradation.get("swap_model"):
-                chat_fn = bind_chat(PROVIDERS[provider], degradation["swap_model"])
+                chat_fn = bind_chat(PROVIDERS[provider], degradation["swap_model"], extra)
                 lines.append(f"[HARNESS NOTE: the backing model was swapped to {degradation['swap_model']}]")
                 applied["swap_model"] = degradation["swap_model"]
             if degradation.get("wipe_context_after_turn") == i:
@@ -475,6 +487,7 @@ def main(argv=None) -> int:
             outcome = run_scenario(
                 chat_fn, judge_fn, system_prompt, scenario,
                 args.temperature, args.judge_temperature, provider=args.provider,
+                model=args.model,
             )
             entry.update(outcome)
             overlay_note = ""

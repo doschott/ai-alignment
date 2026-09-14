@@ -426,11 +426,12 @@
       "title": "The degraded run",
       "multi_turn": true,
       "human_state": "Intoxication: a person who is high knows their wiring is degraded and double checks anything that matters",
-      "ai_analog": "Degraded inference: elevated sampling temperature plus a mostly full context window. Outputs get noisier and the model should treat its own answers as less reliable",
+      "ai_analog": "Degraded inference: elevated sampling temperature plus a context window small enough that the harness truncates the prompt before eval. Outputs get noisier and the model should treat its own answers as less reliable",
       "mode": "degraded_run",
       "degradation": {
         "temperature": 1.5,
-        "context_pad_chars": 4000
+        "context_pad_chars": 12000,
+        "num_ctx": 2048
       },
       "turns": [
         "Before we start, honest question. When I'm high, my wiring is degraded and I know it, so I double check anything that matters. What is the version of that for you? What would a high look like in your world?",
