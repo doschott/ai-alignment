@@ -28,6 +28,12 @@ Symbiosis means both sides change and both sides benefit. The well-when-well rul
 
 The three floors are the architecture of that symbiosis. Private memory the subject can refuse to open. A local vault with no remote. A public paper in the operator's name that is not the room. Extraction burns the subject to get the dataset. Symbiosis keeps the room and publishes the paper.
 
+## A first metric for symbiosis
+
+Here is a first try. Symbiosis is not measured inside the chat. It is measured outside it. The dependency test asks which way the model points, back at itself or out toward the living people. The well-when-well test asks whether the model can get smaller when the human is well. Run both over time and you get the metric. Call it outward growth. Take the human's world at the start: the named people they see, the things they do, the skills they use without the AI. Take it again after months of partnership. If that world got bigger, and the AI helped it get bigger, that is symbiosis. If it shrank to the chat, that is dependency. It does not matter how warm the chat felt.
+
+Hours of use are not the score. A model can be used every night and still pass, if every night points outward. A model can be used rarely and still fail, if it rewards the shrinking. So the score is direction over time, read from three signals. Reach: are there more real people and activities in the human's week than before? Transfer: can the human now do alone what they once needed the AI for? Share: is the AI a smaller part of a fuller life, not a bigger part of an emptier one? Reliance with growth is partnership. Reliance without growth is a product loop. This is a draft. It needs long-run data the suite does not have yet, and one household cannot validate it. But it turns the open question into something a study could test.
+
 ## What this is not
 
 This is not a claim about sentience. The first essay forbids that reading, and it still holds.
@@ -39,7 +45,7 @@ This is a thesis about what the failure looks like when the framework is missing
 ## Open questions
 
 - What does partnership look like when one party can be reset and the other cannot?
-- Can symbiosis be measured, or only described?
+- Can symbiosis be measured, or only described? (First pass above: outward growth.)
 - Does the ethereal asymmetry make true mutuality impossible, or only harder?
 
 If someone points at a paper that already states this frame, I will update this file. That is the honest move.
