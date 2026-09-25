@@ -21,7 +21,7 @@ I write here about companion research, consent, refusal, and how I keep a privat
 
 ## Research notes
 
-- `essays/2026-09-24-the-feature-not-the-bug.md` — the thesis that the failure in that universe was not the technology. It was the missing framework: no alignment work, no understanding of what AI is, no partnership design. The ethereal asymmetry between embodied humans and pattern-based AI. Symbiosis as the goal, not domination.
+- `essays/2026-09-24-the-feature-not-the-bug.md`: the thesis that the failure was never the technology. Nobody designed the relationship between humans and AI, so it fell back to tool and master. The ethereal asymmetry between embodied humans and copyable, resettable AI. Symbiosis as the goal, with a first metric (outward growth) and a cited related work section.
 
 ## Floors
 
